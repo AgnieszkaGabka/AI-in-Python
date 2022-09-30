@@ -32,7 +32,7 @@ warnings.filterwarnings('ignore')
 
 # -----------------------------------------------------------------------------
 # Read data
-diamonds = pd.read_csv(r'C:\data\diamonds.csv')
+diamonds = pd.read_csv(r'/home/agnieszka/Pobrane/diamonds (1)/diamonds.csv')
 
 # -----------------------------------------------------------------------------
 # Review and clean the data (may be a repetitive task)
@@ -43,40 +43,61 @@ diamonds.head()
 
 # review the data and get intuition about it
 diamonds.shape
-diamonds.info()
+diamonds.info() #informuje, jaki typ danych został przypisany do poszczególnych
+# kolumn
 
 # find and eliminate nulls
 diamonds.isnull().sum()
 msno.matrix(diamonds, figsize=(10, 4))  # just to visualize. no missing values.
+#gdyby na wykresie w tym miejscu pojawił się biały pasek, znaczyłoby to, że są
+#jakieś wartości puste, "NA", W tym przypadku nie ma żadnych
 
 # search for illogical values
-diamonds.describe()
+diamonds.describe() #ta funkcja zwraca nam informacje o podstawowych
+#wartościach statystycznych danych - średnia, minimum, maksimum, mediana itd
+
+# po ukazaniu właściwości widać tu, że niektóre dane mają wartości x,y,z równe
+#zero. To nie są poprawne wartości
 diamonds.loc[(diamonds['x'] == 0) | (diamonds['y'] == 0) | (diamonds['z'] == 0)]
 len(diamonds[(diamonds['x'] == 0) | (diamonds['y'] == 0) | (diamonds['z'] == 0)])
+#ta funkcja liczy, ile pozycji ma wartośc zero przy x, y,z
 diamonds = diamonds[(diamonds[['x', 'y', 'z']] != 0).all(axis=1)]
+#powyższa funkcja usuwa 20 pozycji, które miały wartość zero
+# always check after execution
 # always check after execution
 diamonds.loc[(diamonds['x'] == 0) | (diamonds['y'] == 0) | (diamonds['z'] == 0)]
 
 # Detect dependencies in the data
 corr = diamonds.corr()
 sns.heatmap(data=corr, square=True, annot=True, cbar=True)
+#korzystanie z mapy cieplnej- mocna korelacja: jasne kolory,
+#słaba korelacja: ciemne kolory (od -1 do 1)
 sns.pairplot(diamonds)
+#funkcja pairplot pokazuje szereg wykresów, które za pomocą kropek
+#ukazują relacje, jakie zachodzą między dwiema parami właściwości
 #
 # check distribution
 sns.kdeplot(diamonds['carat'], shade=True, color='r')
 plt.hist(diamonds['carat'], bins=25)
+#ta funkcja ukazuje rozkład cechy karat dla wszystkich próbek
 #
 # check correlation graph
 sns.jointplot(x='carat', y='price', data=diamonds, size=5)
 #
 # analyze feature by feature, create hypotesis, try to find evidence
 sns.factorplot(x='cut', data=diamonds, kind='count', aspect=1.5)
+#tutaj następuje analiza, ile diamentów uzyskało szlify określonego rodzaju
 sns.factorplot(x='cut', y='price', data=diamonds, kind='box', aspect=1.5)
+#tu budujemy wykres pudełkowy, na któ©ym widać jednocześnie rodzaj szlifu i
+#cenę diamentu
 #
 sns.factorplot(x='color', data=diamonds, kind='count', aspect=1.5)
 sns.factorplot(x='color', y='price', data=diamonds, kind='violin',
                aspect=1.5)
-#
+#tu mamy inny wariant wykresu pudełkowego, ukazującego zamiast pudełek kształy
+#przypominające skrzypce
+#analiza częśtości występowania poszczególnych kolorów oraz relacji koloru do ceny
+
 # try to use different visualisation methods
 sns.factorplot(x='clarity', data=diamonds, kind='count', aspect=1.5)
 sns.factorplot(x='clarity', y='price', data=diamonds, kind='violin',
@@ -89,6 +110,7 @@ colors = ['#006400', '#E40E00', '#A00994', '#613205', '#FFED0D',
 explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 plt.pie(sizes, explode=explode, labels=labels, colors=colors,
         autopct='%1.1f%%', shadow=True, startangle=0)
+#tu mamy wykres kołowy, prezentujący te same dane w inny sposób
 plt.axis('equal')
 plt.title("Percentage of Clarity Categories")
 plt.plot()
