@@ -145,7 +145,43 @@ plt.xlim(0, 1000)
 plt.ylim(0, 50000)
 #
 sns.jointplot(x='volume', y='price', data=diamonds, size=5)
-#
+sns.kdeplot(diamonds['x'], shade=True, color='r')
+sns.kdeplot(diamonds['y'], shade=True, color='g')
+sns.kdeplot(diamonds['z'], shade=True, color='b')
+plt.xlim(2,10)
+diamonds['volume'] = diamonds['x']*diamonds['y']*diamonds['z']
+diamonds.head()
+#zastąpenie wartości z, y, z wartością volume aby nie musieć anaziwaoć trzech
+#czynników
+plt.figure(figsize=(5,5))
+plt.hist(x=diamonds['volume'], bind=30, color='g')
+plt.xlabel('Volume in mm^3')
+plt.ylabel('Frequency')
+plt.title('Distribution of Diamond's Volume)
+plt.xlim(0,1000)
+plt.xlim(0,50000)
+
+sns.joinplot(x='volume', y='price', data=diamonds, size=5)
+
+sns.kdeplot(diamonds['x'], shade=True, color='r')
+sns.kdeplot(diamonds['y'], shade=True, color='g')
+sns.kdeplot(diamonds['z'], shade=True, color='b')
+plt.xlim(2,10)
+diamonds['volume'] = diamonds['x']*diamonds['y']*diamonds['z']
+diamonds.head()
+#zastąpenie wartości z, y, z wartością volume aby nie musieć anaziwaoć trzech
+#czynników
+plt.figure(figsize=(5,5))
+plt.hist(x=diamonds['volume'], bind=30, color='g')
+plt.xlabel('Volume in mm^3')
+plt.ylabel('Frequency')
+plt.title('Distribution of Diamond's Volume)
+plt.xlim(0,1000)
+plt.xlim(0,50000)
+
+sns.joinplot(x='volume', y='price', data=diamonds, size=5)
+
+
 diamonds.drop(['x', 'y', 'z'], axis=1, inplace=True)
 diamonds.head()
 #
@@ -161,17 +197,30 @@ y = diamonds['price']
 # splitting data into train and test data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                     random_state=66)
-
+#zbió© danych dzielony jest na 80:20, 80% to dane uczące do zbudowania
+#odpowiednio dobrego modelu,
+#20% to dane testowe do sprawdzania, czy model dobrze działa
 # -----------------------------------------------------------------------------
 # scaling values
+
+
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 X_train
+#skalowanie wartości - jeśli jedne wartości będą w tysiącahc, a inne w
+#dziesiątkach, alogrytm może stwierdzić, że zdecydowanie ważniejsze są dane
+#w tysiącach
+#po skalowaniu średnia wartośc ma wynosić zero, a średnie odchylenie 1
 
 # -----------------------------------------------------------------------------
 # test different algorithms to get the data predictions
+
+
+#uruchamiamy kilka różnych algorytmów uczenia maszynowego, aby poróœnać wyniki
+#a potem wybrać ten, który spisuje się najlepiej
 scores = []
+#wyiniki uzyskiwane przez róne modele
 models = ['Linear Regression', 'Lasso Regression', 'AdaBoost Regression',
           'Ridge Regression', 'RandomForest Regression',
           'KNeighbours Regression']
@@ -179,9 +228,14 @@ models = ['Linear Regression', 'Lasso Regression', 'AdaBoost Regression',
 # -----------------------------------------------------------------------------
 # Linear regression
 lr = LinearRegression()
+#obiekt odpowiadający za algorytm regresji liniowej
 lr.fit(X_train, y_train)
+#budowanie równania uczącego model uzyskiwanai odpowiednich predykcji
 y_pred = lr.predict(X_test)
+#dla danych testowych znajdujących się w zmiennej X_test wyliczamy przewidywane
+#wartości target i zapisujemy je w zmiennej y_pred
 r2 = r2_score(y_test, y_pred)
+#porównujemy dane z 20% do uczenia z uzyskanymi wynikami
 
 scores.append(r2)
 print('Linear Regression R2: {0:.2f}'.format(r2))
